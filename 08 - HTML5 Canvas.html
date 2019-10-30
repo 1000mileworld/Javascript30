@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5 Canvas</title>
+</head>
+<body>
+<canvas id="draw" width="800" height="800"></canvas>
+<script>
+
+const canvas = document.querySelector('#draw');
+const ctx = canvas.getContext('2d'); //canvas context: object w/ properties and methods to render graphics inside the canvas element. Can be 2D or webgl (3D)
+canvas.width = window.innerWidth; //change canvas size to fill entire web page
+canvas.height = window.innerHeight;
+
+ctx.strokeStyle = '#BADA55';
+ctx.lineJoin = 'round'; //create rounded corner when 2 lines meet
+ctx.lineCap = 'round'; //end of a line drawn is rounded
+ctx.lineWidth = 100;
+
+ctx.globalCompositeOperation = 'multiply'; //photoshop blend modes
+
+let isDrawing = false; //will set to true when user holds down mouse
+let lastX = 0;
+let lastY = 0;
+
+let hue = 0;
+let direction = true;
+
+function draw(e){
+	if(!isDrawing) return; //stop function from running if mouse is not down
+	//console.log(e)
+
+	ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`; //HSL: hue, saturation, lightness (google mother effing hsl)
+
+	ctx.beginPath();
+	ctx.moveTo(lastX, lastY); //line starts from
+	ctx.lineTo(e.offsetX, e.offsetY); //line goes to (offset returns coordinates of mouse pointer)
+	ctx.stroke(); //actually draw
+	[lastX, lastY] = [e.offsetX, e.offsetY]; //destructuring array
+	
+	hue++; //hue has range of 0 to 360
+	if(hue >= 360){ //not necessary, hue will automatically wrap values larger than 360
+		hue = 0;
+	}
+
+	//makes line width increase then decrease back and forth
+	if(ctx.lineWidth >= 100 || ctx.lineWidth <= 1){
+		direction = !direction;
+	}
+	(direction) ? ctx.lineWidth++ : ctx.lineWidth--;
+	
+}
+
+
+
+canvas.addEventListener('mousedown', (e) => {
+	isDrawing = true;
+	[lastX, lastY] = [e.offsetX, e.offsetY]; //start drawing from where mouse is instead of (0,0)
+});
+
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', () => isDrawing = false);
+canvas.addEventListener('mouseout', () => isDrawing = false); //for when mouse button is held down but leaves the canvas; should be treated the same as a mouseup event
+
+</script>
+
+<style>
+  html, body {
+    margin: 0;
+  }
+</style>
+
+</body>
+</html>
