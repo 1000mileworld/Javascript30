@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Key Detection</title>
+  <script type="text/javascript" src="http://www.cornify.com/js/cornify.js"></script>
+</head>
+<body>
+
+	<h1>Enter a secret code and see something amazing!</h1>
+	<p>(Hint: what's my name?)</p>
+<script>
+	const pressed = [];
+	const secretCode = 'joeliang'
+	window.addEventListener('keyup', (e) => {
+		//console.log(e.key);
+		pressed.push(e.key);
+		pressed.splice(-secretCode.length-1, pressed.length-secretCode.length); //splice(index, # elements to remove at index); remove elements at the beginning when as more gets pushed to the end; keep array at length of secret code
+		//if splice index out of range, then it will remove starting at the first element if index<0; nothing happens if index>0 && index>array.length
+		//Need "pressed.length-secretCode.length" as 2nd argument instead of a number because anything positive will remove elements while a negative value will not. You don't want to remove elements until pressed.length>secretCode.length and instead want to populate the array in the beginning. 
+		if(pressed.join('').includes(secretCode)){ //join: glue char together using empty space ''
+			console.log('DING DING!');
+			cornify_add(); //cornify.com
+		}
+		console.log(pressed)
+	})
+
+
+</script>
+</body>
+</html>
