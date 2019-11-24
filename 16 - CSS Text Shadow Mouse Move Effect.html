@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mouse Shadow</title>
+</head>
+<body>
+
+  <div class="hero">
+    <h1 contenteditable>🔥WOAH!</h1>
+  </div>
+
+  <style>
+  html {
+    color: black;
+    font-family: sans-serif;
+  }
+
+  body {
+    margin: 0;
+  }
+
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+  }
+
+  h1 {
+    text-shadow: 10px 10px 0 rgba(0,0,0,1);
+    font-size: 100px;
+  }
+  </style>
+
+<script>
+  const hero = document.querySelector('.hero');
+  const text = hero.querySelector('h1');
+
+  function shadow(e){
+    const width = hero.offsetWidth;
+    const height = hero.offsetHeight;
+
+    //const{offsetWidth: width, offsetHeight: height} = hero; //ES6 destructuring
+
+    const walk = 500; //100px
+
+    let {offsetX: x, offsetY: y} = e;
+
+    //console.log(this, e.target); //'this': thing you listen on; target is thing you triggered on
+    //this: div class of hero, target: sometimes div othertimes h1 tag (because it's nested within div)
+    //need to check because offset coordinates will be 0,0 at top left corner of h1
+    if(this !== e.target){
+      x = x + e.target.offsetLeft;
+      y = y + e.target.offsetTop;
+    }
+
+    const xWalk = Math.round((x/width*walk)-walk/2); //if 100px is walk, then range is -50 to 50px.
+    const yWalk = Math.round((y/height*walk)-walk/2);
+
+    text.style.textShadow = `
+    ${xWalk}px ${yWalk}px 0 rgba(255,0,255,0.7), 
+    ${xWalk*-1}px ${yWalk}px 0 rgba(0,255,255,0.7),
+    ${yWalk}px ${xWalk*-1}px 0 rgba(0,255,0,0.7),
+    ${yWalk*-1}px ${xWalk}px 0 rgba(0,0,255,0.7)
+    `; //rgba: rgb with opacity (alpha value)
+
+  }
+
+  hero.addEventListener('mousemove',shadow);
+</script>
+</body>
+</html>
