@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Understanding JavaScript's Capture</title>
+</head>
+<body class="bod">
+
+  <div class="one">
+    <div class="two">
+      <div class="three">
+      </div>
+    </div>
+  </div>
+
+<style>
+  html {
+    box-sizing: border-box;
+  }
+  
+  *, *:before, *:after { 
+    box-sizing: inherit; 
+  }
+
+  div {
+    width: 100%;
+    padding: 100px;
+  }
+
+  .one {
+    background: thistle;
+  }
+
+  .two {
+    background: mistyrose;
+  }
+
+  .three {
+    background: coral;
+  }
+</style>
+
+<button style="width: 200px; height: 50px;">Click Me</button>
+<script>
+  const divs = document.querySelectorAll('div');
+  const button = document.querySelector('button');
+
+  function logText(e) {
+    console.log(this.classList.value);
+    e.stopPropagation(); //stop bubbling
+  }
+
+  divs.forEach(div => div.addEventListener('click', logText, {
+    capture: false,
+    
+  })); 
+  //capture false (default) means don't run function on this phase; if set to true, then clicking innermost div will return outermost clicked since event triggered on the way "down"
+  /*
+  Events bubble up: clicking on innermost nested element will also count as clicking on outer wrapping element
+  Capture: event trigger propagates from outer to inner (1st phase)
+  Bubble: " " from inner to outer (2nd phase)
+  */
+
+  button.addEventListener('click', () => {
+    console.log('You can only click me once ;)');
+  }, {
+    once: true //only run this event once
+  });
+
+</script>
+</body>
+</html>
